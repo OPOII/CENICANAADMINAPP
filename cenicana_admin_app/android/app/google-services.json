@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "264398735605",
+    "project_id": "datoscenicana",
+    "storage_bucket": "datoscenicana.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264398735605:android:0b20c15973f705f4a19dbc",
+        "android_client_info": {
+          "package_name": "com.example.cenicana_admin_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264398735605-msa9rvu0bfd13f46lokphgrj0mkd0qe7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cenicana_admin_app",
+            "certificate_hash": "d2f58d16e6109504e085ac4f9720972b7ea17f0d"
+          }
+        },
+        {
+          "client_id": "264398735605-bro4uj8nk0oc1lejoi41a6athr1cdqqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwp2IeFed4AIvuSJ_oVEHyVC3gA7vc4kI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264398735605-bro4uj8nk0oc1lejoi41a6athr1cdqqn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
