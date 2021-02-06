@@ -1,9 +1,10 @@
 import 'package:cenicana_admin_app/src/model/tarea.dart';
 import 'package:cenicana_admin_app/src/view/AreaAdmin/AdminArea.dart';
-import 'package:cenicana_admin_app/src/view/LoadingIndicator.dart';
+import 'package:cenicana_admin_app/src/view/Data/DataBaseView.dart';
+import 'package:cenicana_admin_app/src/view/Frames/LoadingIndicator.dart';
 import 'package:cenicana_admin_app/src/view/Lobby/CustomListTile.dart';
 import 'package:cenicana_admin_app/src/view/Lobby/TablaInfo.dart';
-import 'package:cenicana_admin_app/src/view/Lobby/tablaLobby.dart';
+import 'package:cenicana_admin_app/src/view/Lobby/TablaLobby.dart';
 import 'package:cenicana_admin_app/src/view/loginPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
@@ -38,7 +39,7 @@ class _LobbyState extends State<Lobby> {
         .doc('1')
         .collection('PlanSemanal')
         .get();
-    if (hoy.weekday == 6) {
+    if (hoy.weekday == 6 && snapshot.docs.length == 0) {
       print('Esta al 6');
       dynamic resultado = await consul.extraerycargarInformacion();
       setState(
@@ -159,7 +160,13 @@ Drawer menu(context) {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => AdminArea()))
                 }),
-        CustomListTile(Icons.data_usage, 'Database Offline', () => {}),
+        CustomListTile(
+            Icons.data_usage,
+            'Database Offline',
+            () => {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => DatabaseInfo()))
+                }),
         CustomListTile(
           Icons.power_settings_new,
           'Sign out',

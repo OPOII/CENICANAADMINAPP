@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cenicana_admin_app/src/model/Services/authenticationService.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
-import 'package:cenicana_admin_app/src/view/Lobby/lobbyPrincipal.dart';
+import 'package:cenicana_admin_app/src/view/Lobby/LobbyPrincipal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +47,15 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Container(
               child: Image.asset("assets/img/logo.png"),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: Text(
+                'Para Administradores',
+                style: TextStyle(fontSize: 20),
+              ),
             ),
             SingleChildScrollView(
               child: Form(
@@ -123,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         SizedBox(
-          height: 30,
+          height: 10,
         ),
         TextFormField(
           validator: (input) {

@@ -295,6 +295,7 @@ class _UsersState extends State<AgregarUsuarios> {
         .collection('users')
         .doc(tokenUsuario)
         .set(infoUsuario);
+    clearData();
   }
 
   void addNewUser(String contra, String email) async {
