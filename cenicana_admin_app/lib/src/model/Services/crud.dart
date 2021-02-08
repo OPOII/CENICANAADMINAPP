@@ -2,6 +2,7 @@ import 'package:cenicana_admin_app/src/model/DataBase/Database.dart';
 import 'package:cenicana_admin_app/src/model/Services/authenticationService.dart';
 import 'package:cenicana_admin_app/src/model/tarea.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/src/widgets/async.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
@@ -110,5 +111,59 @@ class CrudConsultas {
     List<Tarea> tarea = List<Tarea>();
     tarea = await DataBaseOffLine.instance.queryAll();
     return tarea;
+  }
+
+  Future<List<Tarea>> devolverResumen(AsyncSnapshot<QuerySnapshot> snap) async {
+    List<String> mirar = [];
+    List<Tarea> actuales = [];
+    snap.data.docs.forEach(
+      (element) {
+        if (!mirar.contains(element['hacienda'].toString())) {
+          mirar.add(element['hacienda'].toString());
+          Tarea n = Tarea.fromMap(element.data());
+          actuales.add(n);
+        }
+      },
+    );
+    snap.data.docs.forEach(
+      (element) {
+        for (var i = 0; i < actuales.length; i++) {
+          if (element.data()['hacienda'].toString() == actuales[i].hacienda) {
+            if (element.data()['id'].toString() != actuales[i].id.toString()) {
+              actuales[i].suerte += "," + element['suerte'].toString() + "\n";
+              actuales[i].actividad +=
+                  "," + element['actividad'].toString() + "\n";
+              actuales[i].encargado +=
+                  "," + element['encargado'].toString() + "\n";
+              actuales[i].programa = (double.tryParse(actuales[i].programa) +
+                      double.tryParse(element['horas_programadas'].toString()))
+                  .toStringAsFixed(2);
+              actuales[i].ejecutable =
+                  (double.tryParse(actuales[i].ejecutable) +
+                          double.tryParse(element['ejecutable'].toString()))
+                      .toStringAsFixed(2);
+              actuales[i].pendiente = (double.tryParse(actuales[i].programa) -
+                      double.tryParse(actuales[i].ejecutable))
+                  .toStringAsFixed(2);
+            }
+          }
+        }
+      },
+    );
+    return actuales;
+  }
+
+  Future<List<Tarea>> devolverDetalles(
+      AsyncSnapshot<QuerySnapshot> snap, String hacienda) async {
+    List<Tarea> actuales = [];
+    snap.data.docs.forEach(
+      (element) {
+        if (element['hacienda'].toString() == hacienda) {
+          Tarea n = Tarea.fromMap(element.data());
+          actuales.add(n);
+        }
+      },
+    );
+    return actuales;
   }
 }

@@ -23,6 +23,7 @@ class Lobby extends StatefulWidget {
 class _LobbyState extends State<Lobby> {
   final DocumentReference ref;
   final CrudConsultas consul;
+  String cambiante = 'resumen';
   _LobbyState(this.ref, this.consul);
   List<Tarea> listado;
   bool terminado = true;
@@ -39,7 +40,7 @@ class _LobbyState extends State<Lobby> {
         .doc('1')
         .collection('PlanSemanal')
         .get();
-    if (hoy.weekday == 6 && snapshot.docs.length == 0) {
+    if (hoy.weekday == 1 && snapshot.docs.length == 0) {
       print('Esta al 6');
       dynamic resultado = await consul.extraerycargarInformacion();
       setState(
@@ -48,7 +49,7 @@ class _LobbyState extends State<Lobby> {
           terminado = false;
         },
       );
-    } else if (hoy.weekday != 1 && snapshot.docs.length != 0) {
+    } else if (snapshot.docs.length != 0) {
       print('Entro aqui');
       dynamic resultado = await consul.traerInsumoDeFirebase();
       setState(
@@ -87,7 +88,42 @@ class _LobbyState extends State<Lobby> {
                 child: Column(
                   children: <Widget>[
                     TablaInformacion(snapshot),
-                    Container(child: TablaLobby(snap: snapshot))
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              cambiante = 'resumen';
+                            });
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Text('Ver resumen'),
+                            ],
+                          ),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              cambiante = 'tiempoReal';
+                            });
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Text('Ver todo'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      child: TablaLobby(
+                        snap: snapshot,
+                        modificacion: cambiante,
+                        traer: consul,
+                      ),
+                    ),
                   ],
                 ),
               ),

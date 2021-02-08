@@ -52,7 +52,7 @@ class TablaInformacion extends StatelessWidget {
           child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               child: percentIndicator(snap)),
-        )
+        ),
       ],
     );
   }
