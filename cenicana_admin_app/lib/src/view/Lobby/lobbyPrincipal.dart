@@ -50,8 +50,15 @@ class _LobbyState extends State<Lobby> {
         },
       );
     } else if (snapshot.docs.length != 0) {
-      print('Entro aqui');
       dynamic resultado = await consul.traerInsumoDeFirebase();
+      setState(
+        () {
+          listado = resultado;
+          terminado = false;
+        },
+      );
+    } else if (snapshot.docs.length == 0) {
+      dynamic resultado = await consul.extraerycargarInformacion();
       setState(
         () {
           listado = resultado;
@@ -93,9 +100,11 @@ class _LobbyState extends State<Lobby> {
                       children: <Widget>[
                         FlatButton(
                           onPressed: () {
-                            setState(() {
-                              cambiante = 'resumen';
-                            });
+                            setState(
+                              () {
+                                cambiante = 'resumen';
+                              },
+                            );
                           },
                           child: Row(
                             children: <Widget>[

@@ -8,6 +8,7 @@ import 'dart:convert' as convert;
 
 class CrudConsultas {
   AuthenticationService service = new AuthenticationService();
+  String plansemanal = 'PlanSemanal';
   Future<DocumentReference> obtenerUsuarioActual(String idUser) async {
     DocumentReference referencia = FirebaseFirestore.instance
         .collection('Ingenio')
@@ -104,35 +105,32 @@ class CrudConsultas {
         );
       },
     );
+
     return Future.value(listado);
   }
 
-  Future<List<Tarea>> devolvereDeConsultaSql() async {
-    List<Tarea> tarea = List<Tarea>();
-    tarea = await DataBaseOffLine.instance.queryAll();
-    return tarea;
-  }
-
+  ///Metodo que me devuelve el resumen de las actividades que se planearon
   Future<List<Tarea>> devolverResumen(AsyncSnapshot<QuerySnapshot> snap) async {
     List<String> mirar = [];
     List<Tarea> actuales = [];
+    //Hago un primer barrido mirando cuales son las actividades que hay y las guardo en una lista de string
     snap.data.docs.forEach(
       (element) {
-        if (!mirar.contains(element['hacienda'].toString())) {
-          mirar.add(element['hacienda'].toString());
+        if (!mirar.contains(element['actividad'].toString())) {
+          mirar.add(element['actividad'].toString());
           Tarea n = Tarea.fromMap(element.data());
           actuales.add(n);
         }
       },
     );
+    //Luego hago una doble pasara preguntando si la actividad actual coincide con la que guarde y asi se va actualizando en el indice para mostrar todo
     snap.data.docs.forEach(
       (element) {
         for (var i = 0; i < actuales.length; i++) {
-          if (element.data()['hacienda'].toString() == actuales[i].hacienda) {
+          if (element.data()['actividad'].toString() == actuales[i].actividad) {
             if (element.data()['id'].toString() != actuales[i].id.toString()) {
               actuales[i].suerte += "," + element['suerte'].toString() + "\n";
-              actuales[i].actividad +=
-                  "," + element['actividad'].toString() + "\n";
+
               actuales[i].encargado +=
                   "," + element['encargado'].toString() + "\n";
               actuales[i].programa = (double.tryParse(actuales[i].programa) +
@@ -150,7 +148,37 @@ class CrudConsultas {
         }
       },
     );
+    actulizarsqflite();
     return actuales;
+  }
+
+  actulizarsqflite() async {
+    String id = service.currentUser.uid;
+    print(id);
+    List<Tarea> listado = [];
+    DocumentSnapshot referencia = await FirebaseFirestore.instance
+        .collection('Ingenio')
+        .doc('1')
+        .collection('users')
+        .doc(id)
+        .get();
+    await FirebaseFirestore.instance
+        .collection('Ingenio')
+        .doc('1')
+        .collection(plansemanal)
+        .get()
+        .then(
+      (value) {
+        value.docs.forEach(
+          (element) {
+            Tarea n = Tarea.fromMap(element.data());
+            listado.add(n);
+          },
+        );
+      },
+    );
+    await DataBaseOffLine.instance.clearTable();
+    await DataBaseOffLine.instance.llenarTabla(listado);
   }
 
   Future<List<Tarea>> devolverDetalles(
@@ -158,7 +186,7 @@ class CrudConsultas {
     List<Tarea> actuales = [];
     snap.data.docs.forEach(
       (element) {
-        if (element['hacienda'].toString() == hacienda) {
+        if (element['actividad'].toString() == hacienda) {
           Tarea n = Tarea.fromMap(element.data());
           actuales.add(n);
         }

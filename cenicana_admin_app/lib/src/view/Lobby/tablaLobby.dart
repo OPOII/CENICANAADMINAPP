@@ -16,6 +16,7 @@ class TablaLobby extends StatefulWidget {
 
 class _TablaLobby extends State<TablaLobby> {
   String resumen = "";
+  bool color = false;
   @override
   void initState() {
     super.initState();
@@ -46,7 +47,6 @@ class _TablaLobby extends State<TablaLobby> {
           future: widget.traer.devolverResumen(widget.snap),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              print('esta aqui');
               return Loading();
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
@@ -70,7 +70,6 @@ class _TablaLobby extends State<TablaLobby> {
           future: widget.traer.devolverDetalles(widget.snap, resumen),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              print('esta aqui');
               return Loading();
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
@@ -78,7 +77,19 @@ class _TablaLobby extends State<TablaLobby> {
                 return Column(
                   children: <Widget>[
                     detailsTable(data),
-                    Text('Estas en la tabla: ' + widget.modificacion)
+                    Text('Estas en la tabla: ' + widget.modificacion),
+                    FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          if (color == false) {
+                            color = true;
+                          } else if (color == true) {
+                            color = false;
+                          }
+                        });
+                      },
+                      child: Text('Ver terminadas'),
+                    )
                   ],
                 );
               } else if (!snapshot.hasData) {}
@@ -118,7 +129,7 @@ class _TablaLobby extends State<TablaLobby> {
           tooltip: "Actividad",
         ),
         DataColumn(
-          label: Text("Ejecutable"),
+          label: Text("Hectareas \nejecutadas"),
           numeric: false,
           tooltip: "Ejecutable",
         ),
@@ -172,9 +183,9 @@ class _TablaLobby extends State<TablaLobby> {
     return DataTable(
       columns: [
         DataColumn(
-          label: Text("Hacineda"),
+          label: Text("Actividad"),
           numeric: false,
-          tooltip: "Hacienda",
+          tooltip: "Actividad",
         ),
         DataColumn(
           label: Text("  Hectareas \nprogramadas"),
@@ -182,7 +193,7 @@ class _TablaLobby extends State<TablaLobby> {
           tooltip: "programa",
         ),
         DataColumn(
-          label: Text("Ejecutable"),
+          label: Text("Hectareas \nejecutadas"),
           numeric: false,
           tooltip: "Ejecutable",
         ),
@@ -202,7 +213,7 @@ class _TablaLobby extends State<TablaLobby> {
             (epa) => DataRow(
               cells: [
                 DataCell(
-                  Center(child: Text(epa.hacienda)),
+                  Center(child: Text(epa.actividad)),
                 ),
                 DataCell(
                   Center(child: Text(epa.programa.toString())),
@@ -220,7 +231,7 @@ class _TablaLobby extends State<TablaLobby> {
                           setState(
                             () {
                               widget.modificacion = 'detalles';
-                              resumen = epa.hacienda;
+                              resumen = epa.actividad;
                               print(resumen);
                             },
                           );
@@ -268,7 +279,7 @@ class _TablaLobby extends State<TablaLobby> {
           tooltip: "Actividad",
         ),
         DataColumn(
-          label: Text("Ejecutable"),
+          label: Text("Hectareas \nejecutadas"),
           numeric: false,
           tooltip: "Ejecutable",
         ),
@@ -286,6 +297,20 @@ class _TablaLobby extends State<TablaLobby> {
       rows: snapshot
           .map(
             (epa) => DataRow(
+              color: MaterialStateColor.resolveWith(
+                (states) {
+                  double pendiente = double.tryParse(epa.pendiente);
+                  if (color == true) {
+                    if (pendiente == 0) {
+                      return Colors.green[200];
+                    } else if (pendiente != 0) {
+                      return Colors.red[100];
+                    }
+                  } else {
+                    return Colors.white70;
+                  }
+                },
+              ),
               cells: [
                 DataCell(Center(
                   child: Text(epa.id.toString()),
@@ -318,17 +343,5 @@ class _TablaLobby extends State<TablaLobby> {
           )
           .toList(),
     );
-  }
-
-  Text buildText(QueryDocumentSnapshot epa) {
-    double horasProgramadas =
-        double.tryParse(epa['horas_programadas'].toString());
-    double ejecutable = double.tryParse(epa['ejecutable'].toString());
-    double respuesta = horasProgramadas - ejecutable;
-    if (respuesta < 0) {
-      return Text("");
-    } else {
-      return Text(respuesta.toStringAsFixed(2));
-    }
   }
 }

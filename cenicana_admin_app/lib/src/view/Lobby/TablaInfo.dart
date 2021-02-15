@@ -270,7 +270,7 @@ Widget percentIndicator(AsyncSnapshot<QuerySnapshot> snap) {
     },
   );
 
-  double porcentaje = terminadas / snap.data.docs.length;
+  double porcentaje = (terminadas / snap.data.docs.length) * 100;
   if (porcentaje.isNaN) {
     return Loading();
   } else {
