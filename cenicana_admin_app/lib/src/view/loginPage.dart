@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cenicana_admin_app/src/model/Services/authenticationService.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
-import 'package:cenicana_admin_app/src/view/Lobby/LobbyPrincipal.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/LobbyPrincipalAdmin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -107,15 +107,21 @@ class _LoginPageState extends State<LoginPage> {
                             _authenticationService.currentUser.uid);
 
                     print(_authenticationService.currentUser.uid);
-                    Navigator.of(context).push(
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LobbyAdmin(
+                                referencia: ref, crudConsultas: consultas)));
+                    /*Navigator.of(context).push(
                       MaterialPageRoute(
                         settings: RouteSettings(name: '/Lobby'),
-                        builder: (context) => Lobby(
+                        builder: (context) => LobbyAdmin(
                           referencia: ref,
                           crudConsultas: consultas,
                         ),
                       ),
                     );
+                      */
                   }
                 }
               },

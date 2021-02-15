@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class CustomListTile extends StatelessWidget {
+class CustomListTileAdmin extends StatelessWidget {
   IconData icon;
   String text;
   Function onTap;
-  CustomListTile(this.icon, this.text, this.onTap);
+  CustomListTileAdmin(this.icon, this.text, this.onTap);
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:cenicana_admin_app/src/view/Frames/LoadingIndicator.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';

@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cenicana_admin_app/src/view/AreaAdmin/AgregarUsuarios.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+
+import 'AgregarUsuarios.dart';
 
 class AdminArea extends StatefulWidget {
   @override

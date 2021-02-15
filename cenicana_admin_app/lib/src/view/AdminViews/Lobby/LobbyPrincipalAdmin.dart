@@ -1,26 +1,26 @@
 import 'package:cenicana_admin_app/src/model/tarea.dart';
-import 'package:cenicana_admin_app/src/view/AreaAdmin/AdminArea.dart';
-import 'package:cenicana_admin_app/src/view/Data/DataBaseView.dart';
-import 'package:cenicana_admin_app/src/view/Frames/LoadingIndicator.dart';
-import 'package:cenicana_admin_app/src/view/Lobby/CustomListTile.dart';
-import 'package:cenicana_admin_app/src/view/Lobby/TablaInfo.dart';
-import 'package:cenicana_admin_app/src/view/Lobby/TablaLobby.dart';
-import 'package:cenicana_admin_app/src/view/loginPage.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/AreaAdmin/AdminArea.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Data/DataBaseView.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/CustomListTileAdmin.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/TablaInfoAdmin.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/TablaLobbyAdmin.dart';
+import 'package:cenicana_admin_app/src/view/LoginPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Lobby extends StatefulWidget {
+class LobbyAdmin extends StatefulWidget {
   final DocumentReference referencia;
   final CrudConsultas crudConsultas;
-  Lobby({this.referencia, this.crudConsultas});
+  LobbyAdmin({this.referencia, this.crudConsultas});
 
   @override
   _LobbyState createState() => _LobbyState(referencia, crudConsultas);
 }
 
-class _LobbyState extends State<Lobby> {
+class _LobbyState extends State<LobbyAdmin> {
   final DocumentReference ref;
   final CrudConsultas consul;
   String cambiante = 'resumen';
@@ -198,21 +198,21 @@ Drawer menu(context) {
             ],
           ),
         ),
-        CustomListTile(
+        CustomListTileAdmin(
             Icons.assignment_ind,
             'Area admin',
             () => {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => AdminArea()))
                 }),
-        CustomListTile(
+        CustomListTileAdmin(
             Icons.data_usage,
             'Database Offline',
             () => {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => DatabaseInfo()))
                 }),
-        CustomListTile(
+        CustomListTileAdmin(
           Icons.power_settings_new,
           'Sign out',
           () async {
