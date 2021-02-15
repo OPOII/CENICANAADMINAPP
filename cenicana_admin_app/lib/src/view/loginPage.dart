@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cenicana_admin_app/src/model/Services/authenticationService.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Frames/Separador.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/LobbyPrincipalAdmin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
@@ -18,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   ConnectivityResult oldres;
   bool dialogshown = false;
   CrudConsultas consultas = new CrudConsultas();
+  List usuario = [];
   // ignore: missing_return
   Future<bool> checkInternet() async {
     try {
@@ -102,16 +105,23 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   } else if (_authenticationService.currentUser != null) {
-                    DocumentReference ref =
-                        await consultas.obtenerUsuarioActual(
-                            _authenticationService.currentUser.uid);
-
-                    print(_authenticationService.currentUser.uid);
+                    dynamic resultado = await consultas.obtenerUsuarioActual();
+                    setState(() {
+                      usuario = resultado;
+                    });
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => LobbyAdmin(
-                                referencia: ref, crudConsultas: consultas)));
+                                referencia: usuario,
+                                crudConsultas: consultas)));
+                    /* Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                Separador(consul: consultas)));
+                    */
+
                     /*Navigator.of(context).push(
                       MaterialPageRoute(
                         settings: RouteSettings(name: '/Lobby'),

@@ -6,13 +6,15 @@ import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/CustomListTileAdmin
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/TablaInfoAdmin.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/TablaLobbyAdmin.dart';
 import 'package:cenicana_admin_app/src/view/LoginPage.dart';
+import 'package:cenicana_admin_app/src/view/UserViews/LobbyUser/TablaInfoUser.dart';
+import 'package:cenicana_admin_app/src/view/UserViews/LobbyUser/TablaLobbyUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LobbyAdmin extends StatefulWidget {
-  final DocumentReference referencia;
+  final List referencia;
   final CrudConsultas crudConsultas;
   LobbyAdmin({this.referencia, this.crudConsultas});
 
@@ -21,10 +23,11 @@ class LobbyAdmin extends StatefulWidget {
 }
 
 class _LobbyState extends State<LobbyAdmin> {
-  final DocumentReference ref;
+  final List usuarioActual;
   final CrudConsultas consul;
   String cambiante = 'resumen';
-  _LobbyState(this.ref, this.consul);
+  String info = "";
+  _LobbyState(this.usuarioActual, this.consul);
   List<Tarea> listado;
   bool terminado = true;
   @override
@@ -34,37 +37,54 @@ class _LobbyState extends State<LobbyAdmin> {
   }
 
   elegirMostrar() async {
-    DateTime hoy = new DateTime.now();
     final snapshot = await FirebaseFirestore.instance
         .collection('Ingenio')
         .doc('1')
         .collection('PlanSemanal')
         .get();
-    if (hoy.weekday == 1 && snapshot.docs.length == 0) {
-      print('Esta al 6');
-      dynamic resultado = await consul.extraerycargarInformacion();
-      setState(
-        () {
-          listado = resultado;
-          terminado = false;
-        },
-      );
-    } else if (snapshot.docs.length != 0) {
-      dynamic resultado = await consul.traerInsumoDeFirebase();
-      setState(
-        () {
-          listado = resultado;
-          terminado = false;
-        },
-      );
-    } else if (snapshot.docs.length == 0) {
-      dynamic resultado = await consul.extraerycargarInformacion();
-      setState(
-        () {
-          listado = resultado;
-          terminado = false;
-        },
-      );
+    if (usuarioActual[0]['charge'] == 'admin') {
+      DateTime hoy = new DateTime.now();
+      if (hoy.weekday == 1 && snapshot.docs.length == 0) {
+        dynamic resultado = await consul.extraerycargarInformacionAdmin();
+        setState(
+          () {
+            listado = resultado;
+            terminado = false;
+          },
+        );
+      } else if (snapshot.docs.length != 0) {
+        dynamic resultado = await consul.traerInsumoDeFirebaseAdmin();
+        setState(
+          () {
+            listado = resultado;
+            terminado = false;
+          },
+        );
+      } else if (snapshot.docs.length == 0) {
+        dynamic resultado = await consul.extraerycargarInformacionAdmin();
+        setState(
+          () {
+            listado = resultado;
+            terminado = false;
+          },
+        );
+      }
+    } else if (usuarioActual[0]['charge'] == 'user') {
+      if (snapshot.docs.length == 0) {
+        setState(
+          () {
+            info = 'excel';
+            terminado = false;
+          },
+        );
+      } else if (snapshot.docs.length != 0) {
+        setState(
+          () {
+            info = 'firebase';
+            terminado = false;
+          },
+        );
+      }
     }
   }
 
@@ -73,12 +93,8 @@ class _LobbyState extends State<LobbyAdmin> {
     while (terminado) {
       return Loading();
     }
-    if (listado.isEmpty) {
-      return Scaffold(
-        appBar: appBar(),
-        drawer: Container(width: 200, child: menu(context)),
-      );
-    } else if (!listado.isEmpty) {
+
+    if (usuarioActual[0]['charge'] == 'admin') {
       return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Ingenio')
@@ -136,11 +152,116 @@ class _LobbyState extends State<LobbyAdmin> {
                   ],
                 ),
               ),
-              drawer: Container(width: 200, child: menu(context)),
+              drawer:
+                  Container(width: 200, child: menu(context, usuarioActual)),
             );
           }
         },
       );
+    } else if (usuarioActual[0]['charge'] == 'user') {
+      if (info == 'excel') {
+        print('Entro al excel');
+        return FutureBuilder<List<Tarea>>(
+          future: consul.obtenerListadoDelExcelUser(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Loading();
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              return Scaffold(
+                appBar: appBar(),
+                body: SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        TablaInformacionUser(snapshot.data),
+                        Container(
+                          child: TablaLobbyUser(snap: snapshot.data),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                drawer:
+                    Container(width: 200, child: menu(context, usuarioActual)),
+              );
+            }
+          },
+        );
+      } else if (info == 'firebase') {
+        return FutureBuilder<List<Tarea>>(
+          future: consul.obtenerListadoDeFirebaseUser(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Loading();
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              return Scaffold(
+                appBar: appBar(),
+                body: SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        TablaInformacionUser(snapshot.data),
+                        Container(
+                          child: TablaLobbyUser(snap: snapshot.data),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              info = 'recargar';
+                            });
+                          },
+                          child: Text('Recargar'),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                drawer:
+                    Container(width: 200, child: menu(context, usuarioActual)),
+              );
+            }
+          },
+        );
+      } else if (info == 'recarga') {
+        Future<List<Tarea>> resultado = consul.obtenerListadoDeFirebaseUser();
+        return FutureBuilder<List<Tarea>>(
+          future: resultado,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Loading();
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              return Scaffold(
+                appBar: appBar(),
+                body: SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        TablaInformacionUser(snapshot.data),
+                        Container(
+                          child: TablaLobbyUser(snap: snapshot.data),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              info = 'firebase';
+                            });
+                          },
+                          child: Text('Recargar'),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                drawer: Container(
+                    width: 200,
+                    child: usuarioActual[0] != null
+                        ? menu(context, usuarioActual)
+                        : Loading()),
+              );
+            }
+          },
+        );
+      }
     }
   }
 
@@ -170,7 +291,7 @@ class _LobbyState extends State<LobbyAdmin> {
   }
 }
 
-Drawer menu(context) {
+Drawer menu(context, List usuarioActual) {
   return Drawer(
     child: ListView(
       children: <Widget>[
@@ -187,13 +308,13 @@ Drawer menu(context) {
                   children: [
                     CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      backgroundImage: NetworkImage(
-                          "https://www.decideo.com/photo/art/default/42090343-35199053.jpg?v=1579807427"),
+                      backgroundImage:
+                          NetworkImage(usuarioActual[0]['urlfoto']),
                     ),
                   ],
                 ),
               ),
-              Text("Juanito",
+              Text(usuarioActual[0]['name'],
                   style: TextStyle(color: Colors.black, fontSize: 15.0)),
             ],
           ),

@@ -25,7 +25,7 @@ class _TablaLobby extends State<TablaLobby> {
   @override
   Widget build(BuildContext context) {
     if (widget.modificacion == 'tiempoReal') {
-      widget.traer.devolverResumen(widget.snap);
+      widget.traer.devolverResumenAdmin(widget.snap);
       return Column(
         children: [
           SingleChildScrollView(
@@ -44,7 +44,7 @@ class _TablaLobby extends State<TablaLobby> {
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: FutureBuilder<List<Tarea>>(
-          future: widget.traer.devolverResumen(widget.snap),
+          future: widget.traer.devolverResumenAdmin(widget.snap),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Loading();
@@ -67,7 +67,7 @@ class _TablaLobby extends State<TablaLobby> {
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: FutureBuilder<List<Tarea>>(
-          future: widget.traer.devolverDetalles(widget.snap, resumen),
+          future: widget.traer.devolverDetallesAdmin(widget.snap, resumen),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Loading();

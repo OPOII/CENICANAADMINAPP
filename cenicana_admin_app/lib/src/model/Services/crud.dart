@@ -8,17 +8,30 @@ import 'dart:convert' as convert;
 
 class CrudConsultas {
   AuthenticationService service = new AuthenticationService();
-  String plansemanal = 'PlanSemanal';
-  Future<DocumentReference> obtenerUsuarioActual(String idUser) async {
-    DocumentReference referencia = FirebaseFirestore.instance
+  String planSemanal = 'PlanSemanal';
+  Future obtenerUsuarioActual() async {
+    List usuario = [];
+    String idUser = service.currentUser.uid;
+    await FirebaseFirestore.instance
         .collection('Ingenio')
         .doc('1')
         .collection('users')
-        .doc('idUser');
-    return Future.value(referencia);
+        .get()
+        .then(
+      (value) {
+        value.docs.forEach(
+          (element) {
+            if (element.id == idUser) {
+              usuario.add(element);
+            }
+          },
+        );
+      },
+    );
+    return usuario;
   }
 
-  Future<List<Tarea>> extraerycargarInformacion() async {
+  Future<List<Tarea>> extraerycargarInformacionAdmin() async {
     List<Tarea> listados = List<Tarea>();
     var raw = await http.get(
         "https://script.google.com/macros/s/AKfycbxNlThMqfNAlppcG_MgWzqlKGTsLGiZeTb1LveQzTHTKSEh9EM/exec");
@@ -68,7 +81,7 @@ class CrudConsultas {
     return Future.value(listados);
   }
 
-  Future<List<Tarea>> traerInsumoDeFirebase() async {
+  Future<List<Tarea>> traerInsumoDeFirebaseAdmin() async {
     List<Tarea> listado = List<Tarea>();
     await FirebaseFirestore.instance
         .collection('Ingenio')
@@ -99,7 +112,6 @@ class CrudConsultas {
             actual.observacion = element['observacion'].toString();
             actual.encargado = element['encargado'].toString();
             actual.id = element['id'];
-            print(actual.toJson());
             listado.add(actual);
           },
         );
@@ -110,7 +122,8 @@ class CrudConsultas {
   }
 
   ///Metodo que me devuelve el resumen de las actividades que se planearon
-  Future<List<Tarea>> devolverResumen(AsyncSnapshot<QuerySnapshot> snap) async {
+  Future<List<Tarea>> devolverResumenAdmin(
+      AsyncSnapshot<QuerySnapshot> snap) async {
     List<String> mirar = [];
     List<Tarea> actuales = [];
     //Hago un primer barrido mirando cuales son las actividades que hay y las guardo en una lista de string
@@ -154,7 +167,6 @@ class CrudConsultas {
 
   actulizarsqflite() async {
     String id = service.currentUser.uid;
-    print(id);
     List<Tarea> listado = [];
     DocumentSnapshot referencia = await FirebaseFirestore.instance
         .collection('Ingenio')
@@ -165,7 +177,7 @@ class CrudConsultas {
     await FirebaseFirestore.instance
         .collection('Ingenio')
         .doc('1')
-        .collection(plansemanal)
+        .collection(planSemanal)
         .get()
         .then(
       (value) {
@@ -181,7 +193,7 @@ class CrudConsultas {
     await DataBaseOffLine.instance.llenarTabla(listado);
   }
 
-  Future<List<Tarea>> devolverDetalles(
+  Future<List<Tarea>> devolverDetallesAdmin(
       AsyncSnapshot<QuerySnapshot> snap, String hacienda) async {
     List<Tarea> actuales = [];
     snap.data.docs.forEach(
@@ -193,5 +205,84 @@ class CrudConsultas {
       },
     );
     return actuales;
+  }
+
+  ///-----------------------------------------------------------------------------------------------------------///
+  ///Consultas de los usuarios
+
+  ///Metodo que me trae el listado de las tareas de firebase
+  Future<List<Tarea>> obtenerListadoDeFirebaseUser() async {
+    String id = service.currentUser.uid;
+    List<Tarea> listado = [];
+    DocumentSnapshot referencia = await FirebaseFirestore.instance
+        .collection('Ingenio')
+        .doc('1')
+        .collection('users')
+        .doc(id)
+        .get();
+    await FirebaseFirestore.instance
+        .collection('Ingenio')
+        .doc('1')
+        .collection(planSemanal)
+        .get()
+        .then(
+      (value) {
+        value.docs.forEach(
+          (element) {
+            if (referencia.data()['codigo_hacienda'] ==
+                    element.data()['hacienda'].toString() &&
+                referencia.data()['identificacion'].toString() ==
+                    element.data()['encargado'].toString()) {
+              Tarea n = Tarea.fromMap(element.data());
+              listado.add(n);
+            }
+          },
+        );
+      },
+    );
+    //Si la base de datos sqflite esta en cero, significa que no ha sido creada, entonces se llena la tabla con el listado de firebase
+    int n = await DataBaseOffLine.instance.verificarSiEstaVacia() as int;
+    if (n == 0) {
+      await DataBaseOffLine.instance.llenarTabla(listado);
+    } else {
+      //await DatabaseOffLine
+      //await DataBaseOffLine.instance.llenarTabla(listado);
+    }
+    return Future.value(listado);
+  }
+
+  /// En caso de que los jefes de zona no hayan iniciado la aplicación para que se suba el excel a firebase, entonces se extraen los datos del insumo
+  Future<List<Tarea>> obtenerListadoDelExcelUser() async {
+    String id = service.currentUser.uid;
+    DocumentSnapshot referencia = await FirebaseFirestore.instance
+        .collection('Ingenio')
+        .doc('1')
+        .collection('users')
+        .doc(id)
+        .get();
+    List<Tarea> listados = List<Tarea>();
+    var raw = await http.get(
+        "https://script.google.com/macros/s/AKfycbxNlThMqfNAlppcG_MgWzqlKGTsLGiZeTb1LveQzTHTKSEh9EM/exec");
+    var jsonFeedback = convert.jsonDecode(raw.body);
+    // ignore: unnecessary_statements
+    jsonFeedback.forEach(
+      (element) async {
+        if (referencia.data()['hacienda'].toString() ==
+                element['hacienda'].toString() &&
+            referencia.data()['identificacion'].toString() ==
+                element['encargado'].toString()) {
+          Tarea actual = Tarea.fromMap(element.data());
+          listados.add(actual);
+        }
+      },
+    );
+    int n = await DataBaseOffLine.instance.verificarSiEstaVacia() as int;
+    if (n == 0) {
+      await DataBaseOffLine.instance.llenarTabla(listados);
+    } else {
+      //await DatabaseOffLine
+      //await DataBaseOffLine.instance.llenarTabla(listado);
+    }
+    return Future.value(listados);
   }
 }
