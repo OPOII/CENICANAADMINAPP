@@ -5,6 +5,7 @@ import 'package:cenicana_admin_app/src/model/Services/crud.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Frames/Separador.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/LobbyPrincipalAdmin.dart';
+import 'package:cenicana_admin_app/src/view/UserViews/LobbyUser/LobbyPrincipalUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -109,12 +110,24 @@ class _LoginPageState extends State<LoginPage> {
                     setState(() {
                       usuario = resultado;
                     });
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => LobbyAdmin(
-                                referencia: usuario,
-                                crudConsultas: consultas)));
+                    print('Va a entrar al while');
+
+                    print('entrara en charge');
+                    if (usuario[0]['charge'] == 'admin') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LobbyAdmin(
+                                  referencia: usuario,
+                                  crudConsultas: consultas)));
+                    } else if (usuario[0]['charge'] == 'user') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Lobby(
+                                  referencia: usuario,
+                                  crudConsultas: consultas)));
+                    }
                     /* Navigator.push(
                         context,
                         MaterialPageRoute(

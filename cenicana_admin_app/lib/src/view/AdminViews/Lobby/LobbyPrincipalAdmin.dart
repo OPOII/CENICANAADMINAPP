@@ -158,110 +158,6 @@ class _LobbyState extends State<LobbyAdmin> {
           }
         },
       );
-    } else if (usuarioActual[0]['charge'] == 'user') {
-      if (info == 'excel') {
-        print('Entro al excel');
-        return FutureBuilder<List<Tarea>>(
-          future: consul.obtenerListadoDelExcelUser(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Loading();
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              return Scaffold(
-                appBar: appBar(),
-                body: SingleChildScrollView(
-                  child: Center(
-                    child: Column(
-                      children: <Widget>[
-                        TablaInformacionUser(snapshot.data),
-                        Container(
-                          child: TablaLobbyUser(snap: snapshot.data),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                drawer:
-                    Container(width: 200, child: menu(context, usuarioActual)),
-              );
-            }
-          },
-        );
-      } else if (info == 'firebase') {
-        return FutureBuilder<List<Tarea>>(
-          future: consul.obtenerListadoDeFirebaseUser(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Loading();
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              return Scaffold(
-                appBar: appBar(),
-                body: SingleChildScrollView(
-                  child: Center(
-                    child: Column(
-                      children: <Widget>[
-                        TablaInformacionUser(snapshot.data),
-                        Container(
-                          child: TablaLobbyUser(snap: snapshot.data),
-                        ),
-                        FlatButton(
-                          onPressed: () {
-                            setState(() {
-                              info = 'recargar';
-                            });
-                          },
-                          child: Text('Recargar'),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                drawer:
-                    Container(width: 200, child: menu(context, usuarioActual)),
-              );
-            }
-          },
-        );
-      } else if (info == 'recarga') {
-        Future<List<Tarea>> resultado = consul.obtenerListadoDeFirebaseUser();
-        return FutureBuilder<List<Tarea>>(
-          future: resultado,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Loading();
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              return Scaffold(
-                appBar: appBar(),
-                body: SingleChildScrollView(
-                  child: Center(
-                    child: Column(
-                      children: <Widget>[
-                        TablaInformacionUser(snapshot.data),
-                        Container(
-                          child: TablaLobbyUser(snap: snapshot.data),
-                        ),
-                        FlatButton(
-                          onPressed: () {
-                            setState(() {
-                              info = 'firebase';
-                            });
-                          },
-                          child: Text('Recargar'),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                drawer: Container(
-                    width: 200,
-                    child: usuarioActual[0] != null
-                        ? menu(context, usuarioActual)
-                        : Loading()),
-              );
-            }
-          },
-        );
-      }
     }
   }
 
@@ -319,13 +215,16 @@ Drawer menu(context, List usuarioActual) {
             ],
           ),
         ),
-        CustomListTileAdmin(
-            Icons.assignment_ind,
-            'Area admin',
-            () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AdminArea()))
-                }),
+        if (usuarioActual[0] != null &&
+            usuarioActual[0]['charge'] == 'admin') ...[
+          CustomListTileAdmin(
+              Icons.assignment_ind,
+              'Area admin',
+              () => {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AdminArea()))
+                  }),
+        ],
         CustomListTileAdmin(
             Icons.data_usage,
             'Database Offline',
