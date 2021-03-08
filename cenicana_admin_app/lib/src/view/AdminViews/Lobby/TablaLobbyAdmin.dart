@@ -15,7 +15,9 @@ class TablaLobby extends StatefulWidget {
 }
 
 class _TablaLobby extends State<TablaLobby> {
+  List<Tarea> organizar = [];
   String resumen = "";
+  bool ascending = false;
   bool color = false;
   @override
   void initState() {
@@ -73,19 +75,22 @@ class _TablaLobby extends State<TablaLobby> {
               return Loading();
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
-                List<Tarea> data = snapshot.data;
+                organizar = snapshot.data;
                 return Column(
                   children: <Widget>[
-                    detailsTable(data),
+                    detailsTable(organizar, ascending),
                     Text('Estas en la tabla: ' + widget.modificacion),
                     FlatButton(
                       onPressed: () {
                         setState(() {
-                          if (color == false) {
+                          if (color == false && ascending == false) {
+                            ascending = true;
                             color = true;
-                          } else if (color == true) {
+                          } else if (color == true && ascending == true) {
+                            ascending = false;
                             color = false;
                           }
+                          organizarTabla(organizar, ascending);
                         });
                       },
                       child: Text('Ver terminadas'),
@@ -250,8 +255,10 @@ class _TablaLobby extends State<TablaLobby> {
     );
   }
 
-  DataTable detailsTable(List<Tarea> snapshot) {
+  DataTable detailsTable(List<Tarea> snapshot, bool ascending) {
     return DataTable(
+      sortAscending: ascending,
+      sortColumnIndex: 7,
       columns: [
         DataColumn(
           label: Text("ID"),
@@ -343,5 +350,21 @@ class _TablaLobby extends State<TablaLobby> {
           )
           .toList(),
     );
+  }
+
+  organizarTabla(List<Tarea> data, bool ascending) {
+    print('entro a organizar');
+    print(data[0].toMap());
+    if (ascending) {
+      data.sort((a, b) =>
+          double.parse(a.pendiente).compareTo(double.tryParse(b.pendiente)));
+    } else {
+      data.sort((a, b) =>
+          double.parse(b.pendiente).compareTo(double.tryParse(a.pendiente)));
+    }
+    setState(() {
+      organizar = data;
+    });
+    print(data[0].toMap());
   }
 }

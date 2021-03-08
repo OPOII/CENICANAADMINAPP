@@ -1,4 +1,4 @@
-import 'package:cenicana_admin_app/src/model/DataBase/Database.dart';
+import 'package:cenicana_admin_app/src/model/DataBase/DatabaseAdmin.dart';
 import 'package:cenicana_admin_app/src/model/tarea.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +113,7 @@ class _TablaLobby extends State<TablaLobbyUser> {
                     context: context,
                     builder: (context) => SimpleDialog(
                       title: Text(
-                          'Inserte el número de hectareas realizadas hasta ahora'),
+                          'Inserte el número de hectareas realizadas hasta ahora, debe tener en cuenta las hectareas pasadas realizadas y sumarle las que acaba de realizar para poder poner las que lleva hasta ahora'),
                       children: <Widget>[
                         TextFormField(
                           keyboardType: TextInputType.number,
@@ -132,13 +132,35 @@ class _TablaLobby extends State<TablaLobbyUser> {
                               if (ejecutableController.text == "") {
                                 return "No se puede ingresar un campo vacio";
                               } else {
-                                setState(
-                                  () {
-                                    updateRow(ejecutableController.text, epa);
-                                    idActualizar = epa.id;
-                                  },
-                                );
-                                //actualizar(epa, ejecutableController.text);
+                                double input =
+                                    double.tryParse(ejecutableController.text);
+                                double programada =
+                                    double.tryParse(epa.programa);
+                                if (input > programada) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => SimpleDialog(
+                                      title: Text(
+                                          'No se puede agregar mas hectareas de las que se les fue impuestas, revise que no haya cometido un error'),
+                                      children: <Widget>[
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Entendido'))
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  print('Entro al condicional sin problema');
+                                  setState(
+                                    () {
+                                      updateRow(ejecutableController.text, epa);
+                                      idActualizar = epa.id;
+                                    },
+                                  );
+                                  //actualizar(epa, ejecutableController.text);
+                                }
                               }
                             },
                           ),

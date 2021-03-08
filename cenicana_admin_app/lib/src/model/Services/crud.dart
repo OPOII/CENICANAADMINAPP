@@ -1,4 +1,4 @@
-import 'package:cenicana_admin_app/src/model/DataBase/Database.dart';
+import 'package:cenicana_admin_app/src/model/DataBase/DatabaseAdmin.dart';
 import 'package:cenicana_admin_app/src/model/Services/authenticationService.dart';
 import 'package:cenicana_admin_app/src/model/tarea.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -117,7 +117,8 @@ class CrudConsultas {
         );
       },
     );
-
+    await DataBaseOffLine.instance.clearTable();
+    await DataBaseOffLine.instance.llenarTabla(listado);
     return Future.value(listado);
   }
 
@@ -212,6 +213,7 @@ class CrudConsultas {
 
   ///Metodo que me trae el listado de las tareas de firebase
   Future<List<Tarea>> obtenerListadoDeFirebaseUser() async {
+    await DataBaseOffLine.instance.clearTable();
     String id = service.currentUser.uid;
     List<Tarea> listado = [];
     DocumentSnapshot referencia = await FirebaseFirestore.instance

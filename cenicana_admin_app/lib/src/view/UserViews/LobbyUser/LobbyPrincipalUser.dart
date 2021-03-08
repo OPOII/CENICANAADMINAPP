@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
 import 'package:cenicana_admin_app/src/model/tarea.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Data/DataBaseView.dart';
+import 'package:cenicana_admin_app/src/view/AdminViews/Data/DataBaseViewUser.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/CustomListTileAdmin.dart';
 import 'package:cenicana_admin_app/src/view/LoginPage.dart';
@@ -84,8 +85,10 @@ class _LobbyState extends State<Lobby> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => DatabaseInfo())),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DatabaseInfoUser())),
                   //SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
                 },
                 child: Text('Ir al modo OffLine'),
@@ -301,7 +304,7 @@ Drawer menu(context, CrudConsultas consul, List usuario) {
             children: <Widget>[
               SizedBox(
                 height: 115,
-                width: 120,
+                width: 140,
                 child: Stack(
                   fit: StackFit.expand,
                   overflow: Overflow.visible,
@@ -313,8 +316,10 @@ Drawer menu(context, CrudConsultas consul, List usuario) {
                   ],
                 ),
               ),
-              Text(usuario[0]['name'],
-                  style: TextStyle(color: Colors.black, fontSize: 15.0)),
+              Expanded(
+                child: Text(usuario[0]['name'],
+                    style: TextStyle(color: Colors.black, fontSize: 15.0)),
+              ),
             ],
           ),
         ),
@@ -323,18 +328,7 @@ Drawer menu(context, CrudConsultas consul, List usuario) {
           'Database Offline',
           () => {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => DatabaseInfo()))
-          },
-        ),
-        CustomListTileAdmin(
-          Icons.power_settings_new,
-          'Sign out',
-          () async {
-            await FirebaseAuth.instance.signOut();
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => LoginPage()));
+                MaterialPageRoute(builder: (context) => DatabaseInfoUser()))
           },
         ),
         CustomListTileAdmin(
@@ -347,6 +341,17 @@ Drawer menu(context, CrudConsultas consul, List usuario) {
                 builder: (context) => UserView(consul: usuario),
               ),
             ),
+          },
+        ),
+        CustomListTileAdmin(
+          Icons.power_settings_new,
+          'Sign out',
+          () async {
+            await FirebaseAuth.instance.signOut();
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => LoginPage()));
           },
         ),
       ],
