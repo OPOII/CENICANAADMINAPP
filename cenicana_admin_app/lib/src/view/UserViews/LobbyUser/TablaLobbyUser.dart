@@ -126,7 +126,7 @@ class _TablaLobby extends State<TablaLobbyUser> {
                           },
                         ),
                         Center(
-                          child: FlatButton(
+                          child: TextButton(
                             child: Text('Guardar'),
                             onPressed: () {
                               if (ejecutableController.text == "") {
@@ -143,7 +143,7 @@ class _TablaLobby extends State<TablaLobbyUser> {
                                       title: Text(
                                           'No se puede agregar mas hectareas de las que se les fue impuestas, revise que no haya cometido un error'),
                                       children: <Widget>[
-                                        FlatButton(
+                                        TextButton(
                                             onPressed: () {
                                               Navigator.pop(context);
                                             },

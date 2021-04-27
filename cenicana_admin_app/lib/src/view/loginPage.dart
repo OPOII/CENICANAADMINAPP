@@ -2,11 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cenicana_admin_app/src/model/Services/authenticationService.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
-import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.dart';
-import 'package:cenicana_admin_app/src/view/AdminViews/Frames/Separador.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/LobbyPrincipalAdmin.dart';
 import 'package:cenicana_admin_app/src/view/UserViews/LobbyUser/LobbyPrincipalUser.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 20,
             ),
+            // ignore: deprecated_member_use
             FlatButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
@@ -90,13 +88,13 @@ class _LoginPageState extends State<LoginPage> {
                         content: Text(
                             'El usuario con el que esta intentando acceder no se encuentra en nuestra base de datos, por favor ingrese con un usuario valido'),
                         actions: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: Text('OK'),
                             onPressed: () {
                               Navigator.pop(context);
                             },
                           ),
-                          FlatButton(
+                          TextButton(
                             child: Text('Cancel'),
                             onPressed: () {
                               Navigator.pop(context);

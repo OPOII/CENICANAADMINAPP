@@ -32,7 +32,7 @@ class CrudConsultas {
   }
 
   Future<List<Tarea>> extraerycargarInformacionAdmin() async {
-    List<Tarea> listados = List<Tarea>();
+    List<Tarea> listados = [];
     var raw = await http.get(
         "https://script.google.com/macros/s/AKfycbxNlThMqfNAlppcG_MgWzqlKGTsLGiZeTb1LveQzTHTKSEh9EM/exec");
     var jsonFeedback = convert.jsonDecode(raw.body);
@@ -82,7 +82,7 @@ class CrudConsultas {
   }
 
   Future<List<Tarea>> traerInsumoDeFirebaseAdmin() async {
-    List<Tarea> listado = List<Tarea>();
+    List<Tarea> listado = [];
     await FirebaseFirestore.instance
         .collection('Ingenio')
         .doc('1')
@@ -262,7 +262,7 @@ class CrudConsultas {
         .collection('users')
         .doc(id)
         .get();
-    List<Tarea> listados = List<Tarea>();
+    List<Tarea> listados = [];
     var raw = await http.get(
         "https://script.google.com/macros/s/AKfycbxNlThMqfNAlppcG_MgWzqlKGTsLGiZeTb1LveQzTHTKSEh9EM/exec");
     var jsonFeedback = convert.jsonDecode(raw.body);

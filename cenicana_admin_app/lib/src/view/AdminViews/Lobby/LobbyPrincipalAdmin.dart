@@ -6,8 +6,6 @@ import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/CustomListTileAdmin
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/TablaInfoAdmin.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/TablaLobbyAdmin.dart';
 import 'package:cenicana_admin_app/src/view/LoginPage.dart';
-import 'package:cenicana_admin_app/src/view/UserViews/LobbyUser/TablaInfoUser.dart';
-import 'package:cenicana_admin_app/src/view/UserViews/LobbyUser/TablaLobbyUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -114,7 +112,7 @@ class _LobbyState extends State<LobbyAdmin> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        FlatButton(
+                        TextButton(
                           onPressed: () {
                             setState(
                               () {
@@ -128,7 +126,7 @@ class _LobbyState extends State<LobbyAdmin> {
                             ],
                           ),
                         ),
-                        FlatButton(
+                        TextButton(
                           onPressed: () {
                             setState(() {
                               cambiante = 'tiempoReal';
@@ -200,7 +198,7 @@ Drawer menu(context, List usuarioActual) {
                 width: 120,
                 child: Stack(
                   fit: StackFit.expand,
-                  overflow: Overflow.visible,
+                  clipBehavior: Clip.none,
                   children: [
                     CircleAvatar(
                       backgroundColor: Colors.transparent,

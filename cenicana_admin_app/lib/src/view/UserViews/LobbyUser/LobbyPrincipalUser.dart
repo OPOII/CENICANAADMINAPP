@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
 import 'package:cenicana_admin_app/src/model/tarea.dart';
-import 'package:cenicana_admin_app/src/view/AdminViews/Data/DataBaseView.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Data/DataBaseViewUser.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Lobby/CustomListTileAdmin.dart';
@@ -77,13 +76,11 @@ class _LobbyState extends State<Lobby> {
       if (resu == ConnectivityResult.none) {
         dialogshown = true;
         showDialog(
-          context: context,
-          barrierDismissible: false,
-          child: AlertDialog(
+          builder: (context) => AlertDialog(
             title: Text('Error'),
             content: Text('No Data Connection Available'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () => {
                   Navigator.push(
                       context,
@@ -95,6 +92,8 @@ class _LobbyState extends State<Lobby> {
               )
             ],
           ),
+          context: context,
+          barrierDismissible: false,
         );
       } else if (oldres == ConnectivityResult.none) {
         checkInternet().then((result) {
@@ -202,7 +201,7 @@ class _LobbyState extends State<Lobby> {
                       Container(
                         child: TablaLobbyUser(snap: snapshot.data),
                       ),
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           setState(() {
                             info = 'recargar';
@@ -242,7 +241,7 @@ class _LobbyState extends State<Lobby> {
                       Container(
                         child: TablaLobbyUser(snap: snapshot.data),
                       ),
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           setState(() {
                             info = 'firebase';
@@ -307,7 +306,7 @@ Drawer menu(context, CrudConsultas consul, List usuario) {
                 width: 140,
                 child: Stack(
                   fit: StackFit.expand,
-                  overflow: Overflow.visible,
+                  clipBehavior: Clip.none,
                   children: [
                     CircleAvatar(
                       backgroundColor: Colors.transparent,

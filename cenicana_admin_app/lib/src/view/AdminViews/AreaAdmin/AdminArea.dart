@@ -35,13 +35,11 @@ class _AreaAdmins extends State<AdminArea> {
       if (resu == ConnectivityResult.none) {
         dialogshown = true;
         showDialog(
-          context: context,
-          barrierDismissible: false,
-          child: AlertDialog(
+          builder: (context) => AlertDialog(
             title: Text('Error'),
             content: Text('No Data Connection Available'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () => {
                   //Navigator.push(context,
                   //  MaterialPageRoute(builder: (context) => DatabaseInfo())),
@@ -51,6 +49,8 @@ class _AreaAdmins extends State<AdminArea> {
               )
             ],
           ),
+          context: context,
+          barrierDismissible: false,
         );
       } else if (oldres == ConnectivityResult.none) {
         checkInternet().then((result) {

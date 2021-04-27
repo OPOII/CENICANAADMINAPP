@@ -311,7 +311,7 @@ Color progreso(double porcentaje) {
   } else if (porcentaje >= 50.0 && porcentaje < 75.0) {
     devolver = Colors.green[100];
   } else if (porcentaje >= 75.0 && porcentaje < 85.0) {
-    devolver = Colors.red[200];
+    devolver = Colors.green[200];
   } else if (porcentaje >= 85 && porcentaje < 99.9) {
     devolver = Colors.green[400];
   } else if (porcentaje == 100.0) {

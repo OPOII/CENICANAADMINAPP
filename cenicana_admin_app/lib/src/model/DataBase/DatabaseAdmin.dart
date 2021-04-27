@@ -97,7 +97,7 @@ class DataBaseOffLine {
   Future<List<Tarea>> queryAll() async {
     Database db = await instance.database;
     List<Map<String, dynamic>> querys = await db.query(_tableName);
-    List<Tarea> retornar = List<Tarea>();
+    List<Tarea> retornar = [];
     // ignore: await_only_futures
     await querys.forEach((element) {
       Tarea actual = new Tarea();

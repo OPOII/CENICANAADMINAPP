@@ -5,7 +5,6 @@ import 'package:cenicana_admin_app/src/model/DataBase/DatabaseAdmin.dart';
 import 'package:cenicana_admin_app/src/model/Services/crud.dart';
 import 'package:cenicana_admin_app/src/model/tarea.dart';
 import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 
@@ -175,7 +174,7 @@ class DatabaseView extends State<DatabaseInfo> {
                                             },
                                           ),
                                           Center(
-                                            child: FlatButton(
+                                            child: TextButton(
                                               child: Text('Guardar'),
                                               onPressed: () {
                                                 if (ejecutableController.text ==

@@ -62,13 +62,11 @@ class _UsersState extends State<AgregarUsuarios> {
       if (resu == ConnectivityResult.none) {
         dialogshown = true;
         showDialog(
-          context: context,
-          barrierDismissible: false,
-          child: AlertDialog(
+          builder: (context) => AlertDialog(
             title: Text('Error'),
             content: Text('No Data Connection Available'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () => {
                   // Navigator.push(context,
                   //   MaterialPageRoute(builder: (context) => DatabaseInfo())),
@@ -78,6 +76,8 @@ class _UsersState extends State<AgregarUsuarios> {
               )
             ],
           ),
+          context: context,
+          barrierDismissible: false,
         );
       } else if (oldres == ConnectivityResult.none) {
         checkInternet().then((result) {
@@ -94,7 +94,7 @@ class _UsersState extends State<AgregarUsuarios> {
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
-    List<DropdownMenuItem<String>> items = new List();
+    List<DropdownMenuItem<String>> items = [];
     for (String cargos in _charges) {
       // here we are creating the drop down menu items, you can customize the item right here
       // but I'll just use a simple text for this
@@ -248,7 +248,7 @@ class _UsersState extends State<AgregarUsuarios> {
                 return null;
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Add new User'),
               onPressed: () {
                 if (formKey.currentState.validate()) {
@@ -281,7 +281,7 @@ class _UsersState extends State<AgregarUsuarios> {
     infoUsuario['email'] = emailController.text;
     infoUsuario['name'] = nameController.text;
     infoUsuario['telephone'] = telephoneController.text;
-    infoUsuario['haciendasResponsables'] = new List<String>();
+    infoUsuario['haciendasResponsables'] = [];
     infoUsuario['codigo_hacienda'] = haciendaController.text;
     infoUsuario['identificacion'] = identificacionController.text;
     infoUsuario['cedula'] = cedulaController.text;

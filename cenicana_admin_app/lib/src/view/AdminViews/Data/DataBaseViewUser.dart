@@ -220,7 +220,7 @@ class DatabaseView extends State<DatabaseInfoUser> {
                                             },
                                           ),
                                           Center(
-                                            child: FlatButton(
+                                            child: TextButton(
                                               child: Text('Guardar'),
                                               onPressed: () {
                                                 if (ejecutableController.text ==
@@ -274,9 +274,9 @@ class DatabaseView extends State<DatabaseInfoUser> {
   }
 
   ///Boton que permite actualizar la tabla en la base de datos de firebase en caso de que tenga conectividad
-  FlatButton buildFlatButton() {
+  TextButton buildFlatButton() {
     if (dialogshown == false) {
-      return FlatButton(
+      return TextButton(
         child: Text('Actualizar'),
         onPressed: () {
           //Llama al metodo que actualizara la tabla
@@ -285,15 +285,15 @@ class DatabaseView extends State<DatabaseInfoUser> {
       );
     } else {
       //En caso de que no haya conectividad, no se podra pulsar el boton de actualizar
-      return FlatButton(child: Text('Actualizar'), onPressed: null);
+      return TextButton(child: Text('Actualizar'), onPressed: null);
     }
   }
 
   ///Metodo que permite al usuario borrar la tabla para poder guardar los nuevos datos del nuevo insumo de firebase o del excel
-  FlatButton borrarTabla() {
+  TextButton borrarTabla() {
     DateTime viernes = new DateTime.now();
     if (viernes.weekday == 5 && dialogshown == false) {
-      return FlatButton(
+      return TextButton(
         child: Text('Borrar Tabla'),
         onPressed: () {
           showDialog(
@@ -316,14 +316,14 @@ class DatabaseView extends State<DatabaseInfoUser> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    FlatButton(
+                    TextButton(
                         child: Text('SI'),
                         onPressed: () async {
                           await DataBaseOffLine.instance.clearTable();
                           Navigator.pop(context);
                           Navigator.pop(context);
                         }),
-                    FlatButton(
+                    TextButton(
                         child: Text('No'),
                         onPressed: () {
                           Navigator.pop(context);
@@ -336,7 +336,7 @@ class DatabaseView extends State<DatabaseInfoUser> {
         },
       );
     } else {
-      return FlatButton(child: Text('Borrar Tabla'), onPressed: null);
+      return TextButton(child: Text('Borrar Tabla'), onPressed: null);
     }
   }
 

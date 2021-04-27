@@ -101,7 +101,7 @@ class ProfilePic extends StatelessWidget {
       width: 120,
       child: Stack(
         fit: StackFit.expand,
-        overflow: Overflow.visible,
+        clipBehavior: Clip.none,
         children: [
           CircleAvatar(
               backgroundImage: NetworkImage(user['urlfoto']),
@@ -112,6 +112,7 @@ class ProfilePic extends StatelessWidget {
             child: SizedBox(
               height: 46,
               width: 46,
+              // ignore: deprecated_member_use
               child: FlatButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
@@ -145,6 +146,7 @@ class ProfileMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      // ignore: deprecated_member_use
       child: FlatButton(
         padding: EdgeInsets.all(20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),

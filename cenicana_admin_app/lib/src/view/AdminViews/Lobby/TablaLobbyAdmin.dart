@@ -4,6 +4,7 @@ import 'package:cenicana_admin_app/src/view/AdminViews/Frames/LoadingIndicator.d
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class TablaLobby extends StatefulWidget {
   final AsyncSnapshot<QuerySnapshot> snap;
   String modificacion;
@@ -39,7 +40,7 @@ class _TablaLobby extends State<TablaLobby> {
               ],
             ),
           ),
-          //FlatButton(onPressed: () {}, child: Icon(Icons.add_circle))
+          //TextButtonTextButton(onPressed: () {}, child: Icon(Icons.add_circle))
         ],
       );
     } else if (widget.modificacion == 'resumen') {
@@ -50,16 +51,18 @@ class _TablaLobby extends State<TablaLobby> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Loading();
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasData) {
-                List<Tarea> data = snapshot.data;
-                return Column(
-                  children: [
-                    resumeDataTable(data),
-                    Text('Estas en la tabla: ' + widget.modificacion)
-                  ],
-                );
-              } else if (!snapshot.hasData) {}
+            } else {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  List<Tarea> data = snapshot.data;
+                  return Column(
+                    children: [
+                      resumeDataTable(data),
+                      Text('Estas en la tabla: ' + widget.modificacion)
+                    ],
+                  );
+                } else if (!snapshot.hasData) {}
+              }
             }
           },
         ),
@@ -80,7 +83,7 @@ class _TablaLobby extends State<TablaLobby> {
                   children: <Widget>[
                     detailsTable(organizar, ascending),
                     Text('Estas en la tabla: ' + widget.modificacion),
-                    FlatButton(
+                    TextButton(
                       onPressed: () {
                         setState(() {
                           if (color == false && ascending == false) {
@@ -231,7 +234,7 @@ class _TablaLobby extends State<TablaLobby> {
                 ),
                 DataCell(
                     Center(
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           setState(
                             () {
